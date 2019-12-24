@@ -3,6 +3,7 @@ package grass
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/net/html"
@@ -15,6 +16,8 @@ const (
 const (
 	svgClassName = ".js-calendar-graph-svg"
 	grassNodeTag = "rect"
+
+	dateFormat = "2006-01-02"
 )
 
 const (
@@ -26,7 +29,7 @@ type Grass struct {
 	x, y      int
 	dataCount int
 	color     string
-	date      string
+	date      time.Time
 }
 
 func (g *Grass) String() string {
@@ -49,6 +52,14 @@ func (g *Grass) Growth() int {
 		return 0
 	}
 	return 0
+}
+
+func (g *Grass) GetMonth() int {
+	return int(g.date.Month())
+}
+
+func (g *Grass) GetDay() int {
+	return g.date.Day()
 }
 
 // Mow scrape contributions information from GitHub.
@@ -93,7 +104,7 @@ func rectToGrass(n *html.Node) *Grass {
 		case "fill":
 			g.color = a.Val
 		case "data-date":
-			g.date = a.Val
+			g.date, _ = time.Parse(dateFormat, a.Val)
 		}
 	}
 	return g
