@@ -21,6 +21,7 @@ const (
 	maxCap = 365 + 7
 )
 
+// Grass represents GitHub daily contributions information.
 type Grass struct {
 	x, y      int
 	dataCount int
@@ -33,12 +34,32 @@ func (g *Grass) String() string {
 		g.x, g.y, g.dataCount, g.color, g.date)
 }
 
+// Growth returns concentration of grass. (Less 0 1 2 3 4 More)
+func (g *Grass) Growth() int {
+	switch g.color {
+	case "#196127":
+		return 4
+	case "#239a3b":
+		return 3
+	case "#7bc96f":
+		return 2
+	case "#c6e48b":
+		return 1
+	case "#ebedf0":
+		return 0
+	}
+	return 0
+}
+
+// Mow scrape contributions information from GitHub.
 func Mow(id string) ([]*Grass, error) {
 	url := createURL(id)
+	// TODO: check response code
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		return nil, err
 	}
+	// TODO: explicit sort grasses by date asc
 	return scrape(doc), nil
 }
 

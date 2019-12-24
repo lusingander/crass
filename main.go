@@ -1,22 +1,47 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"os"
 
-const box = "  "
-
-const (
-	g4 = "\x1b[48;5;22m" + box + "\x1b[0m"
-	g3 = "\x1b[48;5;28m" + box + "\x1b[0m"
-	g2 = "\x1b[48;5;40m" + box + "\x1b[0m"
-	g1 = "\x1b[48;5;120m" + box + "\x1b[0m"
-	g0 = "\x1b[48;5;7m" + box + "\x1b[0m"
+	"github.com/lusingander/crass/grass"
 )
 
+const cell = "  "
+
+var grassCells = map[int]string{
+	4: "\x1b[48;5;22m" + cell + "\x1b[0m",
+	3: "\x1b[48;5;28m" + cell + "\x1b[0m",
+	2: "\x1b[48;5;40m" + cell + "\x1b[0m",
+	1: "\x1b[48;5;120m" + cell + "\x1b[0m",
+	0: "\x1b[48;5;7m" + cell + "\x1b[0m",
+}
+
+func printGrasses(grasses []*grass.Grass) {
+	week := [7]string{}
+	for i, g := range grasses {
+		week[i%7] += grassCells[g.Growth()]
+	}
+	for _, w := range week {
+		fmt.Println(w)
+	}
+}
+
+func run(args []string) error {
+	if len(args) == 0 {
+		return nil // TODO: error
+	}
+	grasses, err := grass.Mow(args[0])
+	if err != nil {
+		return err
+	}
+	printGrasses(grasses)
+	return nil
+}
+
 func main() {
-	fmt.Println(g0 + g0 + g0 + g0 + g0 + g0 + g4)
-	fmt.Println(g4 + g4 + g3 + g2 + g1 + g1 + g2)
-	fmt.Println(g1 + g3 + g2 + g2 + g2 + g1 + g2)
-	fmt.Println(g0 + g2 + g4 + g2 + g1 + g0 + g2)
-	fmt.Println(g0 + g4 + g0 + g0 + g0 + g0 + g3)
-	fmt.Println(g2 + g1 + g3 + g2 + g1 + g2 + g3)
+	if err := run(os.Args[1:]); err != nil {
+		log.Fatal(err)
+	}
 }
