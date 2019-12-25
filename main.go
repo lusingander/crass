@@ -19,7 +19,31 @@ var grassCells = map[int]string{
 }
 
 func printGrasses(grasses []*grass.Grass) {
+	header := "    "
+	for i, g := range grasses {
+		if i%7 > 0 {
+			continue
+		}
+		if d := g.GetDay(); 1 <= d && d <= 7 {
+			header += fmt.Sprintf("%2d", g.GetMonth())
+		} else {
+			header += "  "
+		}
+	}
+	fmt.Println(header)
 	week := [7]string{}
+	for i := 0; i < 7; i++ {
+		switch i {
+		case 1:
+			week[i] += "Mon "
+		case 3:
+			week[i] += "Wed "
+		case 5:
+			week[i] += "Fri "
+		default:
+			week[i] += "    "
+		}
+	}
 	for i, g := range grasses {
 		week[i%7] += grassCells[g.Growth()]
 	}
