@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 
 	"github.com/lusingander/crass/grass"
+	terminal "github.com/wayneashleyberry/terminal-dimensions"
 )
 
 const cell = "  "
@@ -18,10 +20,24 @@ var grassCells = map[int]string{
 	0: "\x1b[48;5;7m" + cell + "\x1b[0m",
 }
 
+func calcReduceWeeks() int {
+	const maxWidth = 4 + (54 * 2) // leftSide + (weeks * 2)
+	w, _ := terminal.Width()
+	shortage := maxWidth - w
+	if shortage <= 0 {
+		return 0
+	}
+	return int(math.Ceil(float64(shortage) / 2.0))
+}
+
 func printGrasses(grasses []*grass.Grass) {
+	r := calcReduceWeeks()
 	header := "    "
 	for i, g := range grasses {
 		if i%7 > 0 {
+			continue
+		}
+		if (i / 7) < r {
 			continue
 		}
 		if d := g.GetDay(); 1 <= d && d <= 7 {
@@ -45,6 +61,9 @@ func printGrasses(grasses []*grass.Grass) {
 		}
 	}
 	for i, g := range grasses {
+		if (i / 7) < r {
+			continue
+		}
 		week[i%7] += grassCells[g.Growth()]
 	}
 	for _, w := range week {
