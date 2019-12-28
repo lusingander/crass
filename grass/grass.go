@@ -2,6 +2,7 @@ package grass
 
 import (
 	"fmt"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -65,8 +66,14 @@ func (g *Grass) GetDay() int {
 // Mow scrape contributions information from GitHub.
 func Mow(id string) ([]*Grass, error) {
 	url := createURL(id)
-	// TODO: check response code
-	doc, err := goquery.NewDocument(url)
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("failed to request: status code = %d, url = %s", res.StatusCode, url)
+	}
+	doc, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
 		return nil, err
 	}
