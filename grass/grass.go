@@ -54,10 +54,12 @@ func (g *Grass) Growth() int {
 	return 0
 }
 
+// GetMonth returns the month of the grassing date.
 func (g *Grass) GetMonth() int {
 	return int(g.date.Month())
 }
 
+// GetDay returns the day of the grassing date.
 func (g *Grass) GetDay() int {
 	return g.date.Day()
 }
