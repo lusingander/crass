@@ -66,12 +66,9 @@ func (g *Grass) GetDay() int {
 // Mow scrape contributions information from GitHub.
 func Mow(id string) ([]*Grass, error) {
 	url := createURL(id)
-	res, err := http.Get(url)
+	res, err := get(url)
 	if err != nil {
 		return nil, err
-	}
-	if res.StatusCode != 200 {
-		return nil, fmt.Errorf("failed to request: status code = %d, url = %s", res.StatusCode, url)
 	}
 	doc, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
@@ -87,6 +84,17 @@ func createURL(id string) string {
 
 func grassesNodesSelector() string {
 	return fmt.Sprintf("%s %s", svgClassName, grassNodeTag)
+}
+
+func get(url string) (*http.Response, error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode != 200 {
+		return nil, fmt.Errorf("failed to request: status code = %d, url = %s", res.StatusCode, url)
+	}
+	return res, nil
 }
 
 func scrape(doc *goquery.Document) []*Grass {
