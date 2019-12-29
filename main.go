@@ -23,7 +23,7 @@ var grassCells = map[int]string{
 func calcReduceWeeks() int {
 	const maxWidth = 4 + (54 * 2) // leftSide + (weeks * 2)
 	w, _ := terminal.Width()
-	shortage := maxWidth - w
+	shortage := maxWidth - int(w)
 	if shortage <= 0 {
 		return 0
 	}
@@ -32,12 +32,11 @@ func calcReduceWeeks() int {
 
 func printGrasses(grasses []*grass.Grass) {
 	r := calcReduceWeeks()
+	grasses = grasses[r*7:]
+
 	header := "    "
 	for i, g := range grasses {
 		if i%7 > 0 {
-			continue
-		}
-		if (i / 7) < r {
 			continue
 		}
 		if d := g.GetDay(); 1 <= d && d <= 7 {
@@ -61,9 +60,6 @@ func printGrasses(grasses []*grass.Grass) {
 		}
 	}
 	for i, g := range grasses {
-		if (i / 7) < r {
-			continue
-		}
 		week[i%7] += grassCells[g.Growth()]
 	}
 	for _, w := range week {
