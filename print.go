@@ -19,7 +19,7 @@ var grassCells = map[int]string{
 }
 
 func calcReduceWeeks() int {
-	const maxWidth = 4 + (54 * 2) // leftSide + (weeks * 2)
+	const maxWidth = 4 + (53 * 2) // leftSide + (weeks * 2)
 	w, _ := terminal.Width()
 	shortage := maxWidth - int(w)
 	if shortage <= 0 {
