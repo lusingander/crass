@@ -28,13 +28,36 @@ func calcReduceWeeks() int {
 	return int(math.Ceil(float64(shortage) / 2.0))
 }
 
-func printGrasses(grasses []*grass.Grass) {
-	r := calcReduceWeeks()
-	grasses = grasses[r*7:]
+func createLeftSideBar(disp bool) [7]string {
+	week := [7]string{}
+	if !disp {
+		return week
+	}
+	for i := 0; i < 7; i++ {
+		switch i {
+		case 1:
+			week[i] = "Mon "
+		case 3:
+			week[i] = "Wed "
+		case 5:
+			week[i] = "Fri "
+		default:
+			week[i] = "    "
+		}
+	}
+	return week
+}
 
-	header := "    "
+func createHeader(grasses []*grass.Grass, disp, dispLeft bool) string {
+	header := ""
+	if !disp {
+		return header
+	}
+	if dispLeft {
+		header += "    "
+	}
 	for i, g := range grasses {
-		if i%7 > 0 {
+		if i%7 != 0 {
 			continue
 		}
 		if d := g.GetDay(); 1 <= d && d <= 7 {
@@ -43,23 +66,23 @@ func printGrasses(grasses []*grass.Grass) {
 			header += "  "
 		}
 	}
-	fmt.Println(header)
-	week := [7]string{}
-	for i := 0; i < 7; i++ {
-		switch i {
-		case 1:
-			week[i] += "Mon "
-		case 3:
-			week[i] += "Wed "
-		case 5:
-			week[i] += "Fri "
-		default:
-			week[i] += "    "
-		}
-	}
+	return header
+}
+
+func printGrasses(grasses []*grass.Grass) {
+	r := calcReduceWeeks()
+	grasses = grasses[r*7:]
+
+	displayHeader := true
+	displayLeftSideBar := true
+
+	header := createHeader(grasses, displayHeader, displayLeftSideBar)
+	week := createLeftSideBar(displayLeftSideBar)
 	for i, g := range grasses {
 		week[i%7] += grassCells[g.Growth()]
 	}
+
+	fmt.Println(header)
 	for _, w := range week {
 		fmt.Println(w)
 	}
