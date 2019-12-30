@@ -7,7 +7,7 @@ Growing Grass on CUI
 
 ## Usage
 
-`$ crass lusingander`
+`$ crass <GitHub ID>`
 
 ## Installation
 
