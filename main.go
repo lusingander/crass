@@ -5,13 +5,14 @@ import (
 	"os"
 
 	"github.com/lusingander/crass/grass"
+	"github.com/urfave/cli/v2"
 )
 
-func run(args []string) error {
-	if len(args) == 0 {
+func action(c *cli.Context) error {
+	if c.NArg() == 0 {
 		return nil // TODO: error
 	}
-	grasses, err := grass.Mow(args[0])
+	grasses, err := grass.Mow(c.Args().Get(0))
 	if err != nil {
 		return err
 	}
@@ -20,7 +21,12 @@ func run(args []string) error {
 }
 
 func main() {
-	if err := run(os.Args[1:]); err != nil {
+	app := &cli.App{
+		Name:   "crass",
+		Usage:  "growing grass on CUI",
+		Action: action,
+	}
+	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
 }
