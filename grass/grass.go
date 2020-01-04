@@ -3,6 +3,7 @@ package grass
 import (
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 
@@ -76,8 +77,16 @@ func Mow(id string) ([]*Grass, error) {
 	if err != nil {
 		return nil, err
 	}
-	// TODO: explicit sort grasses by date asc
-	return scrape(doc), nil
+	grasses := scrape(doc)
+	sortGrassesByDateAsc(grasses)
+	return grasses, nil
+}
+
+func sortGrassesByDateAsc(grasses []*Grass) {
+	l := func(i, j int) bool {
+		return grasses[i].date.Before(grasses[j].date)
+	}
+	sort.Slice(grasses, l)
 }
 
 func createURL(id string) string {
