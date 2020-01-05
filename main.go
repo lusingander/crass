@@ -57,10 +57,11 @@ func action(c *cli.Context) error {
 
 func main() {
 	app := &cli.App{
-		Name:   appName,
-		Usage:  appUsage,
-		Action: action,
-		Flags:  flags,
+		Name:                  appName,
+		Usage:                 appUsage,
+		Action:                action,
+		Flags:                 flags,
+		CustomAppHelpTemplate: appHelpTemplate,
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
