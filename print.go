@@ -69,7 +69,15 @@ func createHeader(grasses []*grass.Grass, disp, dispLeft bool) string {
 	return header
 }
 
-func printGrasses(grasses []*grass.Grass) {
+func createFooter(opt *options) string {
+	if !opt.showLegend() {
+		return ""
+	}
+	return fmt.Sprintf("Less %s%s%s%s%s More",
+		grassCells[0], grassCells[1], grassCells[2], grassCells[3], grassCells[4])
+}
+
+func printGrasses(grasses []*grass.Grass, opt *options) {
 	r := calcReduceWeeks()
 	grasses = grasses[r*7:]
 
@@ -77,6 +85,7 @@ func printGrasses(grasses []*grass.Grass) {
 	displayLeftSideBar := true
 
 	header := createHeader(grasses, displayHeader, displayLeftSideBar)
+	footer := createFooter(opt)
 	week := createLeftSideBar(displayLeftSideBar)
 	for i, g := range grasses {
 		week[i%7] += grassCells[g.Growth()]
@@ -85,5 +94,9 @@ func printGrasses(grasses []*grass.Grass) {
 	fmt.Println(header)
 	for _, w := range week {
 		fmt.Println(w)
+	}
+
+	if footer != "" {
+		fmt.Println(footer)
 	}
 }
