@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"os"
 
@@ -41,7 +42,7 @@ func parseFlags(c *cli.Context) *options {
 
 func action(c *cli.Context) error {
 	if c.NArg() == 0 {
-		return nil // TODO: error
+		return errors.New("Error: command requires GitHub ID")
 	}
 	id := c.Args().Get(0)
 	opt := parseFlags(c)
