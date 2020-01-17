@@ -18,8 +18,11 @@ var grassCells = map[int]string{
 	0: "\x1b[48;5;7m" + cell + "\x1b[0m",
 }
 
-func calcReduceWeeks() int {
-	const maxWidth = 4 + (53 * 2) // leftSide + (weeks * 2)
+func calcReduceWeeks(dispLeft bool) int {
+	maxWidth := 53 * 2 // weeks * 2
+    if dispLeft {
+        maxWidth += 4 // += leftSide
+    }
 	w, _ := terminal.Width()
 	shortage := maxWidth - int(w)
 	if shortage <= 0 {
@@ -78,11 +81,11 @@ func createFooter(opt *options) string {
 }
 
 func printGrasses(grasses []*grass.Grass, opt *options) {
-	r := calcReduceWeeks()
-	grasses = grasses[r*7:]
-
 	displayHeader := true
 	displayLeftSideBar := true
+
+	r := calcReduceWeeks(displayLeftSideBar)
+	grasses = grasses[r*7:]
 
 	header := createHeader(grasses, displayHeader, displayLeftSideBar)
 	footer := createFooter(opt)
